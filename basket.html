@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Panier</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script>
+        var data = [
+            { description: "Un frigidaire", unitPrice: 300, qt: 1, sku: "FRG" },
+            { description: "Un évier en fer", unitPrice: 50, qt: 2, sku: "EVF" },
+            { description: "Une armoire à cuillères", unitPrice: 150, qt: 3, sku: "ACU" },
+            { description: "Un pistolet à gauffre", unitPrice: 30, qt: 15, sku: "PGA" },
+        ];
+
+        function showBasketdata(data) {
+            let $rowTemplate = $("#basket tbody tr").first();
+            let total = 0;
+
+            //Suppression de toutes les lignes du tableau sauf la première
+            $("#basket tbody").find("tr:gt(0)").remove();
+
+            for (item of data) {
+                let $row = $rowTemplate.clone().removeClass("hidden");
+
+                $row.children().first().html(item.description);
+                $row.children().eq(1).text(item.unitPrice + " €");
+                $row.children().eq(2).children("input").val(item.qt);
+                $row.children().last().text(item.unitPrice * item.qt);
+                total += (item.unitPrice * item.qt);
+
+                $("#basket tbody").append($row);
+            }
+
+            $("tfoot tr").first().children("td").last().text(total);
+
+        }
+        function addProduct(){
+            //Récupération de la saisie
+            let description = $("#descriptionInput").val();
+            let unitPrice = $("#priceInput").val();
+            let sku = $("#skuInput").val();
+
+            //Ajout d'un produit si les saisies ne sont pas vides
+            if(description.trim() != "" && unitPrice.trim() != "" && sku.trim() != ""){
+                data.push({
+                    description: description,
+                    unitPrice: unitPrice,
+                    sku: sku,
+                    qt: 1
+                });
+
+                showBasketdata(data);
+            }
+        }
+
+        function updateQt() {
+            //Mise à jour du total de la ligne
+            let qt = $(this).val();
+
+            //Mise à jour du total
+            //ou suppression de la ligne si qt=0
+            if(qt >0){
+                let unitPrice = $(this).parent().prev().text().replace("€", "").trim();
+                console.log(unitPrice);
+                console.log(qt * unitPrice);
+                $(this).parent().next().text(qt * unitPrice);
+            } else {
+                $(this).parent().parent().remove();
+            }
+            
+
+            //Mise à jour du total général
+            let rowList = $(this).parent().parent().parent().children()
+            let total = 0;
+            for (row of rowList) {
+                lineTotal = $(row).children().last().text()
+                total += parseInt(lineTotal) || 0;
+            }
+
+            $("tfoot tr").first().children("td").last().text(total);
+        }
+
+        $(document).ready(function () {
+            showBasketdata(data);
+
+            $("#basket tbody").delegate("input", "change", updateQt);
+
+            $("#newProductButton").click(addProduct);
+        });
+
+    </script>
+
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2>Nouveau produit</h2>
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="descriptionInput" class="form-control">
+            </div>
+            <div class="form-group row">
+                <div class="col-6">
+                    <label>Prix unitaire</label>
+                    <input type="number" id="priceInput" class="form-control">
+                </div>
+                <div class="col-6">
+                    <label>Code produit</label>
+                    <input type="text" id="skuInput" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary btn-block" id="newProductButton">
+                    Ajouter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <table id="basket" class="table table-bordered table-striped col-sm-9 col-md-6">
+            <thead>
+                <tr>
+                    <th>Désignation</th>
+                    <th>Prix unitaire</th>
+                    <th>Qt</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--Modèle de ligne pour intégration dans le tableau-->
+                <tr class="hidden">
+                    <td></td>
+                    <td></td>
+                    <td><input type="number" class="form-control"></td>
+                    <td></td>
+                </tr>
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td colspan="3">TOTAL</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+
+        </table>
+    </div>
+
+</body>
+
+</html>
