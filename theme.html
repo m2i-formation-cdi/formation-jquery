@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .active {
+            box-shadow: 0px 0px 5px yellow;
+            border-bottom: solid 1px red;
+        }
+
+        nav {
+            margin: 25px 5px;
+        }
+
+        div {
+            margin: 10px 5px;
+        }
+    </style>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script>
+
+        function navClick(){
+            $navButtons.removeClass("active");
+            $(this).toggleClass("active");
+        }
+
+        function changeTheme(){
+            let theme = {
+                "color": $foreColorSelect.val(),
+                "background-color": $backColorSelect .val()   
+            };
+
+            $("body").css(theme);
+        }
+        
+        $(document).ready(function(){
+            //Définition des cibles (éléments sur lesquels on va intervenir)
+            $navButtons = $("nav button");
+            $changeThemeButton = $("#changeTheme");
+            $foreColorSelect = $("#foreColor");
+            $backColorSelect = $("#backColor");
+
+            //Définition des événements
+            $navButtons.click(navClick);
+            $changeThemeButton.click(changeTheme);
+        });
+    
+    </script>
+</head>
+
+<body>
+
+    <nav>
+        <button class="active">Home</button>
+        <button>Produits</button>
+        <button>Contact</button>
+        <button>Démarche</button>
+    </nav>
+
+    <div>
+        <label>Couleur de texte</label>
+        <select id="foreColor">
+            <option value="red">Rouge</option>
+            <option value="green">Vert</option>
+            <option value="blue">Bleu</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Couleur de texte</label>
+        <select id="backColor">
+            <option value="black">Noir</option>
+            <option value="gray">Gris</option>
+            <option value="antiquewhite">Blanc cassé</option>
+        </select>
+    </div>
+
+    <button id="changeTheme">Changer le thème</button>
+
+</body>
+
+</html>
