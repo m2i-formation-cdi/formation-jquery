@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Jquery start</title>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script>
+
+        function buttonClick (){
+            $(this)
+                    .css({
+                        "color": "red",
+                        "background-color": "black",
+                        "padding": "5px"
+                    })
+                    .text((i, val)=> val + " Je suis cliqué")
+                    .attr("disabled", "disabled");
+
+            animateTitle();
+        }
+
+        function animateTitle(){
+            var $h1 = $("h1");
+
+            $h1.hide(1000, function () {
+                $(this).show(1000);
+            });
+
+            $h1.text(function (index, oldValue) {
+                return (index + 1) + " : " + oldValue;
+            });
+        }
+
+        $(document).ready(function () {
+            $("button").click(buttonClick);//fin d'evenement clique sur bouton
+        });//Fin de document ready
+
+
+
+    </script>
+</head>
+
+<body>
+    <button>Go</button>
+    <button>Go 2</button>
+    <button>Go 3</button>
+
+    <h1>Hello jQuery</h1>
+
+    <h1>Hello Javascript</h1>
+
+    <h1>Hello world</h1>
+
+</body>
+
+</html>
