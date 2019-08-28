@@ -9,20 +9,36 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script>
 
-        function buttonClick (){
+        function buttonClick() {
             $(this)
-                    .css({
-                        "color": "red",
-                        "background-color": "black",
-                        "padding": "5px"
-                    })
-                    .text((i, val)=> val + " Je suis cliqué")
-                    .attr("disabled", "disabled");
+                .css({
+                    "color": "red",
+                    "background-color": "black",
+                    "padding": "5px"
+                })
+                .text((i, val) => val + " Je suis cliqué")
+                .attr("disabled", "disabled");
 
             animateTitle();
         }
 
-        function animateTitle(){
+        function testFade() {
+            var $h1 = $("h1");
+
+            $h1.fadeOut(1000, function () {
+                $(this).fadeIn(1000);
+            });
+        }
+
+        function testSlide() {
+            var $h1 = $("h1");
+
+            $h1.slideUp(1000, function () {
+                $(this).slideDown(1000);
+            });
+        }
+
+        function testShow() {
             var $h1 = $("h1");
 
             $h1.hide(1000, function () {
@@ -32,10 +48,25 @@
             $h1.text(function (index, oldValue) {
                 return (index + 1) + " : " + oldValue;
             });
+
+            animateSpaceship();
+        }
+
+        function animateSpaceship(){
+            $("#spaceship").animate(
+                {
+                    width: "5%",
+                    left: "+=500px",
+                    opacity: ".5"
+                },
+                1000
+            );
         }
 
         $(document).ready(function () {
-            $("button").click(buttonClick);//fin d'evenement clique sur bouton
+            $("#bt1").click(testShow);//fin d'evenement clique sur bouton
+            $("#bt2").click(testSlide);
+            $("#bt3").click(testFade);
         });//Fin de document ready
 
 
@@ -44,15 +75,21 @@
 </head>
 
 <body>
-    <button>Go</button>
-    <button>Go 2</button>
-    <button>Go 3</button>
+    <button id="bt1">Show</button>
+    <button id="bt2">Slide</button>
+    <button id="bt3">Fade</button>
+
+    <div style="background-color:blue; width: 200px; height: 200px" id="bloc">aaa</div>
 
     <h1>Hello jQuery</h1>
 
     <h1>Hello Javascript</h1>
 
     <h1>Hello world</h1>
+
+    <img src="img/spaceship.png" id="spaceship" style="position:absolute">
+
+   
 
 </body>
 
