@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Random user</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script>
+
+        var userList = [];
+
+        function loadCallback(response){
+            console.log(response.results);
+            userList = response.results;
+            
+            let template = $("tbody tr").eq(0);
+
+            let shadowBody = $("<tbody></tbody>");
+            shadowBody.append(template);
+
+            for(index in userList){
+                let row = getRow(userList[index], template);
+                shadowBody.append(row);
+            }
+
+            $("tbody").replaceWith(shadowBody);
+
+        }
+
+        function getRow(user, template){
+            console.log(user);
+            let row = template.clone().removeClass("hidden");
+            row.children().eq(0).text(user.name.first + " " + user.name.last);
+            row.children().eq(1).text(user.email);
+            row.children().eq(2).text(user.location.street + " " 
+                                    + user.location.postcode + " "
+                                    + user.location.city);
+            return row;
+        }
+
+        function loadRandomUsers(){
+            let genderChoice = $("#genderSelect").val();
+            let countryChoice = $("#countrySelect").val();
+
+            let params = {
+                gender: genderChoice,
+                nat: countryChoice,
+                results: 20
+            }
+            $.get("https://randomuser.me/api", params, loadCallback);
+        }
+
+        $(document).ready(function(){
+            $("#loadButton").click(loadRandomUsers);
+        });
+    
+    </script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="container-fluid">
+
+    <div class="row justify-content-center">
+        <div class="col-md-3 mt-4">
+            <div class="form-group">
+                <label>Genre</label>
+                <select id="genderSelect" class="form-control">
+                    <option value="female">Femme</option>
+                    <option value="male">Homme</option>
+                </select>
+            </div>
+            <div class="form-group">
+                    <label>Pays</label>
+                    <select id="countrySelect" class="form-control">
+                        <option value="fr">France</option>
+                        <option value="gb">Royaume Uni</option>
+                        <option value="ie">Irlande</option>
+                        <option value="dk">Danemark</option>
+                        <option value="de">Allemagne</option>
+                        <option value="no">Norvège</option>
+                    </select>
+            </div>
+            <button class="btn btn-primary btn-block" id="loadButton">
+                Charger un utilisateur
+            </button>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped mt-5">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>adresse</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="hidden">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    
+    
+</body>
+</html>
