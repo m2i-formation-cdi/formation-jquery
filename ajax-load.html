@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax load</title>
+
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script>
+    
+    $(document).ready(function(){
+        $("a").click(function(even){
+            even.preventDefault();
+            let url = $(this).attr("href");
+
+
+            $("#content").load(url, function(){
+                console.log("fin de chargement");
+            });
+
+            console.log("click sur bouton");
+        });
+
+        console.log("fin de script");
+    });
+
+    </script>
+</head>
+<body>
+
+    <h1>Monsite</h1>
+
+    <nav>
+        <a href="spaceship.html">Spaceship</a>
+        <a href="basket.html">Panier</a>
+        <a href="content.html #contact">Contact</a>
+        <a href="content.html #complains">Réclamations</a>
+
+    </nav>
+
+    <div id="content">
+
+    </div>
+    
+</body>
+</html>
