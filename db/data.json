@@ -1,0 +1,45 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "taskName": "Acheter du lait",
+      "done": "true"
+    },
+    {
+      "id": 2,
+      "taskName": "Sortir le chat",
+      "done": "true"
+    },
+    {
+      "taskName": "Nettoyer les écuries d'Augias",
+      "done": "false",
+      "id": 4
+    },
+    {
+      "taskName": "Capturer le lion de Némée",
+      "done": "false",
+      "id": 5
+    },
+    {
+      "taskName": "test 2",
+      "id": 6
+    },
+    {
+      "taskName": "Coder Google",
+      "id": 7
+    },
+    {
+      "taskName": "Acheter du vin",
+      "done": "false",
+      "id": 8
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "username": "bob",
+      "email": "bob@mail.com",
+      "pass": "123"
+    }
+  ]
+}

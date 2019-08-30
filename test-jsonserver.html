@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Users</title>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+    <script>
+        const URL = "http://localhost:3000/users";
+
+        function addUser(data){
+            $.post(URL, data)
+                .done(function(){
+                    console.log("user added");
+                })
+                .fail(function(err){
+                    console.log(err);
+                })
+        }
+
+        
+
+        $(document).ready(function(){
+            $("#addButton").click(function(){
+                addUser({ userName: "toto", email: "toto@mail.com", pass: "789"});
+            })
+        });
+    </script>
+</head>
+<body>
+
+    <button id="addButton" type="button">Ajouter</button>
+    
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Todo</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+    <script>
+    
+        const API_URL = "http://localhost:3000/tasks";
+
+        function loadTasks(){
+            $.get(API_URL)
+                .done(displayTasks)
+                .fail(displayError);
+        } 
+
+        function displayError(err){
+            console.log(err);
+        }
+
+        function displayTasks(response){
+            console.log(response);
+            let shadowTbody = $("<tbody></tbody");
+
+            for(task of response){
+                shadowTbody.append(getRow(task));
+            }
+
+            $("tbody").replaceWith(shadowTbody);
+        }
+
+        function getRow(task){
+            let tr = $("<tr></tr>");
+
+            tr.append(getCheckBoxCell(task));
+            tr.append(getTaskNameCell(task));
+            tr.append(getActionCell(task));
+
+            return tr;
+        }
+
+        function getCheckBoxCell(task){
+            let td = $("<td></td>");
+            
+            let checkBox = $("<input>")
+            checkBox.attr({
+                type: "checkbox",
+                class: "form-control"
+            });
+
+            if(task.done== "true"){
+                checkBox.attr("checked", "checked");
+            }
+
+            td.append(checkBox);
+
+            return td;
+        }
+
+        function getTaskNameCell(task){
+            let td = $("<td></td>");
+            td.text(task.taskName);
+            return td;
+        }
+
+        function getActionCell(task){
+            let td = $("<td></td>");
+
+            let updateButton = $("<button></button>");
+            updateButton.data("id", task.id)
+                        .text("modifier")
+                        .attr("class", "btn btn-primary update mr-3");
+
+            let deleteButton = $("<button></button>");
+            deleteButton.data("id", task.id)
+                        .text("supprimer")
+                        .attr("class", "btn btn-danger delete");
+
+            td.append(updateButton);
+            td.append(deleteButton);
+
+            return td;
+        }
+
+        function processForm(even){
+            even.preventDefault();
+
+            let id = $("#taskId").val();
+
+            if(id == ""){
+                addTask();
+            } else {
+                updateTask(id);
+            }
+        }
+
+        function updateTask(id){
+            let newValue = $("#taskInput").val().trim();
+
+            if(newValue != ""){
+                let task = { taskName : newValue };
+                $.ajax( {
+                    url: API_URL + "/" + id,
+                    method: "put",
+                    data: task
+                })
+                .done(function(){
+                    loadTasks();
+                    
+                    $("#taskId").val("");
+                    $("#taskInput").val("");
+                    $("button[type='submit']").text("Ajouter");
+                })
+                .fail(displayError);
+            }
+        }
+
+        function addTask(){
+            
+            let newTask = $("#taskInput").val().trim();
+
+            if(newTask != ""){
+                
+                let task = {
+                    taskName: newTask,
+                    done: false
+                };
+
+                $.post(API_URL, task)
+                    .done(loadTasks)
+                    .fail(displayError)
+            }
+        }
+
+        function deleteTask(){
+            let id = $(this).data("id");
+            $.ajax({
+                url: API_URL + "/" + id,
+                method: "delete"
+            })
+            .done(loadTasks)
+            .fail(displayError);
+        }
+
+        function fillFormForUpdate(){
+            let id = $(this).data("id");
+
+            $.get(API_URL + "/" + id)
+                .done(function(task){
+                    console.log(task);
+                    $("#taskInput").val(task.taskName);
+                    $("#taskId").val(task.id);
+                    $("button[type='submit']").text("Modifier");
+                })
+                .fail(displayError);
+        }
+
+        $(document).ready(function(){
+            loadTasks();
+
+            $("#addForm").submit(processForm);
+
+            $("table").delegate("button.delete", "click", deleteTask);
+
+            $("table").delegate("button.update", "click", fillFormForUpdate);
+        });
+    
+    </script>
+</head>
+<body class="container-fluid">
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+
+            <h1>Liste des choses à faire</h1>
+
+            <form id="addForm">
+                <div class="form-group">
+                    <label>Tâche</label>
+                    <input type="text" class="form-control" id="taskInput">
+                </div>
+
+                    <input type="hidden" id="taskId" value="">
+
+                <button type="submit" 
+                        class="btn btn-block btn-primary">
+                    Ajouter    
+                </button>
+            </form>
+
+            <hr class="mt-2">
+
+            <table class="mt-4 table table-bordered table-striped ">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Tâche</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    
+</body>
+</html>

@@ -17,11 +17,14 @@
             
             let template = $("tbody tr").eq(0);
 
+
             let shadowBody = $("<tbody></tbody>");
             shadowBody.append(template);
 
+            //let shadowBody = $("tbody").clone();
+
             for(index in userList){
-                let row = getRow(userList[index], template);
+                let row = getRow(userList[index], template, index);
                 shadowBody.append(row);
             }
 
@@ -29,14 +32,15 @@
 
         }
 
-        function getRow(user, template){
-            console.log(user);
+        function getRow(user, template, index){
+
             let row = template.clone().removeClass("hidden");
             row.children().eq(0).text(user.name.first + " " + user.name.last);
             row.children().eq(1).text(user.email);
             row.children().eq(2).text(user.location.street + " " 
                                     + user.location.postcode + " "
                                     + user.location.city);
+            row.children().eq(3).children("button").attr("data-index", index);
             return row;
         }
 
@@ -52,14 +56,33 @@
             $.get("https://randomuser.me/api", params, loadCallback);
         }
 
+        function showUserDetails(){
+            let user = userList[$(this).attr("data-index")];
+            
+            $("#userImage").attr("src", user.picture.large);
+            $("#userName").text(user.name.first + " " + user.name.last);
+
+            $(".userInfo").removeClass("hidden");
+        }
+
         $(document).ready(function(){
             $("#loadButton").click(loadRandomUsers);
+
+            $("table").delegate(".details", "click", showUserDetails);
         });
     
     </script>
     <style>
         .hidden {
             display: none;
+        }
+
+        .userInfo {
+            position: fixed;
+            top: 50px;
+            left: 50px;
+            background-color: white;
+            width: 200px;
         }
     </style>
 </head>
@@ -97,6 +120,7 @@
                 <th>Nom</th>
                 <th>Email</th>
                 <th>adresse</th>
+                <th>action</th>
             </tr>
         </thead>
         <tbody>
@@ -104,11 +128,21 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td>
+                    <button class="btn btn-success details">
+                        Voir les détails
+                    </button>
+                </td>
             </tr>
         </tbody>
     </table>
 
-    
+    <div class="card userInfo hidden">
+        <img class="card-img-top" id="userImage">
+        <div class="card-body">
+            <h4 class="card-title" id="userName"></h4>
+        </div>
+    </div>
     
 </body>
 </html>
